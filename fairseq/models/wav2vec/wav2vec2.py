@@ -435,7 +435,6 @@ class Wav2Vec2Model(BaseFairseqModel):
                     .expand(-1, self.n_negatives)
                     .flatten()
                 )
-
                 neg_idxs = torch.randint(
                     low=0, high=high - 1, size=(bsz, self.n_negatives * num)
                 )
@@ -600,7 +599,6 @@ class Wav2Vec2Model(BaseFairseqModel):
             mask_indices = None
 
         x, layer_results = self.encoder(x, padding_mask=padding_mask, layer=layer)
-
         if features_only:
             return {
                 "x": x,
@@ -616,10 +614,10 @@ class Wav2Vec2Model(BaseFairseqModel):
             code_ppl = q["code_perplexity"]
             prob_ppl = q["prob_perplexity"]
             curr_temp = q["temp"]
-
             y = self.project_q(y)
 
             if self.negatives_from_everywhere:
+                raise ValueError("...")
                 neg_cands = self.quantizer(unmasked_features, produce_targets=False)[
                     "x"
                 ]
@@ -638,6 +636,7 @@ class Wav2Vec2Model(BaseFairseqModel):
                 )
 
             if self.codebook_negatives > 0:
+                raise ValueError("...")
                 cb_negs = self.quantizer.sample_from_codebook(
                     y.size(0) * y.size(1), self.codebook_negatives
                 )
@@ -650,6 +649,7 @@ class Wav2Vec2Model(BaseFairseqModel):
             y = self.project_q(y)
 
             if self.negatives_from_everywhere:
+                raise ValueError("...")
                 negs, _ = self.sample_negatives(
                     unmasked_features,
                     y.size(1),
@@ -679,6 +679,8 @@ class Wav2Vec2Model(BaseFairseqModel):
             "x": x,
             "padding_mask": padding_mask,
             "features_pen": features_pen,
+            "mask_indices": mask_indices,
+            "negs": negs,
         }
 
         if prob_ppl is not None:

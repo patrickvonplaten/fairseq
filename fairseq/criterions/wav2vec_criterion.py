@@ -154,7 +154,7 @@ class Wav2vecCriterion(FairseqCriterion):
                 logging_output["correct"] = corr
                 logging_output["count"] = count
 
-        return loss, sample_size, logging_output
+        return loss, sample_size, logging_output, net_output
 
     @staticmethod
     def reduce_metrics(logging_outputs) -> None:
